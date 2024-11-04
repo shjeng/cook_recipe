@@ -1,5 +1,6 @@
 package com.my.cook_recipe.common.config;
 
+import com.my.cook_recipe.common.filter.JwtAuthenticationFilter;
 import com.my.cook_recipe.common.provider.JwtProvider;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,8 +30,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 
-    private final JwtProvider jwtProvider;
-
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     // 1 + 2
 
     @Bean

@@ -1,7 +1,7 @@
 spring:
   datasource:
     url: jdbc:mariadb://localhost:3307/cook_recipe
-    username: sr #sr
+    username: root #sr
     password: 1234 #1234
     driver-class-name: org.mariadb.jdbc.Driver
   jpa:
@@ -32,3 +32,7 @@ server:
       enabled: true
     session:
       tracking-modes: cookie
+
+jwt:
+  secretKey: S3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3y
+  refreshKey: S3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3yS3cr3tK3y

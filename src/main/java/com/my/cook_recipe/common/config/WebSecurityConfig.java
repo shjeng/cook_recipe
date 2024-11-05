@@ -42,7 +42,7 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ).authorizeHttpRequests(request -> request
-                                .requestMatchers("/", "/api/auth/**", "/api/search/**", "/file/**","check").permitAll()
+                                .requestMatchers("/", "/user/*", "/css/**","/js/**").permitAll()
 //                        .requestMatchers(HttpMethod.POST,"/","/api/board/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/user/nt-update-password").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/board/**", "/api/user/**").permitAll()

@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
   <th:block th:replace="~{/fragments/head :: head}"></th:block>
-<body>
-
+<body class="d-flex flex-column  min-vh-100 bg-body-tertiary py-4  ">
+<!--<body class="d-flex align-items-center py-4 bg-body-tertiary">-->
 <div th:replace="~{/fragments/header :: header}"></div>
 
-<div layout:fragment="content" class="content"></div>
+<div layout:fragment="content" ></div>
 
 <div th:replace="~{/fragments/footer :: footer}"></div>
 

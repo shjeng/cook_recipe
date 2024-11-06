@@ -5,12 +5,12 @@
 
 <div layout:fragment="content" class="d-flex justify-content-center w-100 flex-grow-1 flex-shrink-0">
     <main class="w-25 m-auto c_form  ">
-        <form class="m-auto w-100">
+        <form th:action="@{/user/login}" th:object="${MemberRequest}" method="post" class="m-auto w-100">
             <h1 class="h3 mb-3 fw-normal text-center">로그인</h1>
 
 
             <div class="form-floating">
-                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                <input type="text" class="form-control" id="floatingInput" name="id" placeholder="name@example.com">
                 <label for="floatingInput">ID</label>
             </div>
             <div class="form-floating">
@@ -24,7 +24,10 @@
                     아이디 저장
                 </label>
             </div>
-            <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+            <div class="d-flex flex-column">
+                <a class="btn btn-dark w-100 py-2 mb-2" href="/user/sign-up">회원가입</a>
+                <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+            </div>
         </form>
     </main>
 </div>

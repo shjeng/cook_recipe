@@ -44,11 +44,11 @@ public class WebSecurityConfig {
                 ).authorizeHttpRequests(request -> request
                                 .requestMatchers("/", "/user/*", "/css/**","/js/**").permitAll()
 //                        .requestMatchers(HttpMethod.POST,"/","/api/board/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/user/nt-update-password").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/board/**", "/api/user/**").permitAll()
                                 .anyRequest().authenticated()
-                ).exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new FailedAuthenticationEntryPoint())).
-                addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                ).exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
+                        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
     }
 

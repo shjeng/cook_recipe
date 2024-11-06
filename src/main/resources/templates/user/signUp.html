@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/default}">
+
+<div layout:fragment="content" class="d-flex  w-100 ">
+    <main class="w-50 m-auto c_form  border border-1 rounded p-2">
+        <form th:action="@{/user/sign-up}">
+            <h1 class="h3 mb-3 fw-normal ">회원가입</h1>
+        </form>
+    </main>
+</div>
+
+</html>

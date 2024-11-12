@@ -1,7 +1,9 @@
 package com.my.cook_recipe.common.error.exception;
 
 import com.my.cook_recipe.common.error.code.ErrorCode;
+import lombok.Getter;
 
+@Getter
 public class CustomException extends RuntimeException {
     private final String code;
     private final String msg;

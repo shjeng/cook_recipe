@@ -43,8 +43,7 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ).authorizeHttpRequests(request -> request
                                 .requestMatchers("/", "/user/*", "/css/**","/js/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST,"/","/api/board/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/user/login").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/user/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/board/**", "/api/user/**").permitAll()
                                 .anyRequest().authenticated()
                 ).exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new FailedAuthenticationEntryPoint()))

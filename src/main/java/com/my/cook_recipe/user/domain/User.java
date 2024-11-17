@@ -1,10 +1,7 @@
 package com.my.cook_recipe.user.domain;
 
 import com.my.cook_recipe.common.entity.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,7 +16,10 @@ public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(length = 255)
     private String userId;
+    @Column(length = 255)
     private String password;
+    @Column(length = 100)
+    private String nickname;
 }

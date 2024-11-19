@@ -4,11 +4,34 @@
       layout:decorate="~{layout/default}">
 
 <div layout:fragment="content" class="d-flex  w-100 ">
-    <main class="w-50 m-auto c_form  border border-1 rounded p-2">
-        <form th:action="@{/user/sign-up}">
+    <main class="w-50 m-auto c_form  border border-1 rounded p-2  ">
+        <form th:action="@{/user/sign-up}" class="d-flex flex-column gap-1">
             <h1 class="h3 mb-3 fw-normal ">회원가입</h1>
+            <div class="form-floating d-flex gap-1">
+                <input type="text" class="form-control" id="id" placeholder="Password">
+                <label for="id">ID</label>
+                <button type="button" class="btn btn-outline-primary w-auto" style="white-space: nowrap;">중복 확인</button>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password" placeholder="Password">
+                <label for="password">Password</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="passwordConfirm" placeholder="Password" />
+                <label for="passwordConfirm">Password Check</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="name" placeholder="Password" />
+                <label for="name">Name</label>
+            </div>
+            <div class="d-flex flex-row-reverse  gap-1">
+                <button class="btn btn-primary" type="button" id="submitBtn">가입</button>
+                <a class="btn btn-outline-primary" href="javascript:history.back();">이전</a>
+            </div>
         </form>
+
     </main>
+    <script type="module" th:src="@{/js/user/signUp.js}"></script>
 </div>
 
 </html>

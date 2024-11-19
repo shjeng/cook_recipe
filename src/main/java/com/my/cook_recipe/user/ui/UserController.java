@@ -34,4 +34,9 @@ public class UserController {
     public String join(){
         return null;
     }
+
+    @GetMapping("/test/test")
+    public String login(){
+        return null;
+    }
 }

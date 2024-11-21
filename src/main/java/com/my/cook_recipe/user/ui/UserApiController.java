@@ -1,12 +1,16 @@
 package com.my.cook_recipe.user.ui;
 
 import com.my.cook_recipe.common.error.exception.CustomException;
+import com.my.cook_recipe.common.util.StringUtil;
 import com.my.cook_recipe.user.application.UserService;
 import com.my.cook_recipe.user.ui.request.DupleCheck;
+import com.my.cook_recipe.user.ui.request.LoginRequest;
 import com.my.cook_recipe.user.ui.request.SignUpRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -43,8 +47,23 @@ public class UserApiController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Void> signUp(@RequestBody SignUpRequest requestDto){
+    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest requestDto){
+        if (!requestDto.getId().equals(requestDto.getIdCheck())) {
+            throw new CustomException("중복체크된 id와 가입하려는 id가 일치하지 않음.", false);
+        }
+        if (!requestDto.getNickname().equals(requestDto.getNicknameCheck())) {
+            throw new CustomException("중복체크된 닉네임 가입하려는 닉네임이 일치하지 않음.", false);
+        }
+        if (StringUtil.notEquals(requestDto.getPassword(), requestDto.getPasswordCheck())) {
+            throw new CustomException("비밀번호가 일치하지 않습니다.", true);
+        }
         userService.signUp(requestDto);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest) {
+        String token = userService.login(loginRequest);
+        return ResponseEntity.ok(token);
     }
 }

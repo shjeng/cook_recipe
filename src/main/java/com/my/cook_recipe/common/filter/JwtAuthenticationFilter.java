@@ -27,15 +27,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        try{
+        try {
             String token = parseBearerToken(request);
-            if(token==null){
-                filterChain.doFilter(request,response);
+            if (token == null) {
+                filterChain.doFilter(request, response);
                 return;
             }
-            String email = jwtProvider.getEmail(token);
-            if(email == null){
-                filterChain.doFilter(request,response);
+            String email = jwtProvider.getUserId(token);
+            if (email == null) {
+                filterChain.doFilter(request, response);
                 return;
             }
             String role = jwtProvider.getRole(token);
@@ -56,19 +56,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 //            SecurityContext securityContext = SecurityContextHolder.createEmptyContext(); // 새로운 빈 보안 컨텍스트 생성
 //            securityContext.setAuthentication(authenticationToken); // 앞서 생성한 인증 토큰을 보안 컨텍스트에 설정
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 
-    private String parseBearerToken(HttpServletRequest request){
+    private String parseBearerToken(HttpServletRequest request) {
         String authorization = request.getHeader("Authorization");
         boolean hasAuthorization = StringUtils.hasText(authorization);
-        if(!hasAuthorization) return null;
+        if (!hasAuthorization) return null;
 
         boolean isBearer = authorization.startsWith("Bearer "); // "Bearer " 로 시작하느냐?
-        if(!isBearer) return null;
+        if (!isBearer) return null;
         String token = authorization.substring(7);
         return token;
     }

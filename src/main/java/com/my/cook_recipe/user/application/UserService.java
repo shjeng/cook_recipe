@@ -1,6 +1,7 @@
 package com.my.cook_recipe.user.application;
 
 import com.my.cook_recipe.common.error.exception.CustomException;
+import com.my.cook_recipe.common.provider.JwtProvider;
 import com.my.cook_recipe.common.util.StringUtil;
 import com.my.cook_recipe.user.domain.User;
 import com.my.cook_recipe.user.infra.UserRepository;
@@ -11,11 +12,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserService {
     private final UserRepository userRepository;
+    private final JwtProvider jwtProvider;
 
     public boolean idDupleCheck(String id) {
         return userRepository.findByUserId(id).isPresent();
@@ -39,6 +43,12 @@ public class UserService {
     }
 
     public String login(@Valid LoginRequest loginRequest) {
-        return null;
+        Optional<User> userOptional = userRepository.findByUserIdAndPassword(loginRequest.getId(), loginRequest.getPassword());
+        User user = optionalCheck(userOptional);
+        return jwtProvider.create(user.getUserId(), user.getRole());
+    }
+
+    private User optionalCheck(Optional<User> userOptional) {
+        return userOptional.orElseThrow(() -> new CustomException("일치하는 회원 정보가 없습니다.", true));
     }
 }

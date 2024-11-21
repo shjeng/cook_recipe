@@ -21,9 +21,9 @@ public class JwtProvider {
         secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String create(String email, String role) {
+    public String create(String userId, String role) {
         Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS)); // 엑세스 토큰 유효시간 1시간
-        Map<String, String> claimsMap = Map.of("email", email, "role", role);
+        Map<String, String> claimsMap = Map.of("userId", userId, "role", role);
         return Jwts.builder()
                 .claims(claimsMap) // jwt 토큰 내 정보
                 .expiration(expiredDate) // 만료시간
@@ -32,9 +32,9 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String getEmail(String jwt) { // JWT 토큰의 유효성 검사
+    public String getUserId(String jwt) { // JWT 토큰의 유효성 검사
         Claims claims = validateToken().parseSignedClaims(jwt).getPayload();
-        return claims.get("email", String.class);
+        return claims.get("userId", String.class);
     }
 
     public String getRole(String jwt) { // JWT 토큰의 유효성 검사
@@ -43,7 +43,7 @@ public class JwtProvider {
     }
 
     private JwtParser validateToken() {
-        try{
+        try {
             return Jwts.parser().verifyWith(secretKey).build();
         } catch (SecurityException | MalformedJwtException e) {
             // 서명 검증 실패 시 처리

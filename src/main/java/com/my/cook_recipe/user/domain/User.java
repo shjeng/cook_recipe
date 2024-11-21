@@ -2,15 +2,13 @@ package com.my.cook_recipe.user.domain;
 
 import com.my.cook_recipe.common.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity(name = "t_user")
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Getter
 public class User extends BaseEntity {
 
     @Id

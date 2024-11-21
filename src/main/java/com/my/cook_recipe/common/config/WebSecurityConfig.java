@@ -24,6 +24,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -43,7 +44,7 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ).authorizeHttpRequests(request -> request
                                 .requestMatchers("/", "/user/*", "/css/**","/js/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/api/user/**").permitAll()
+                                .requestMatchers("/api/user/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/board/**", "/api/user/**").permitAll()
                                 .anyRequest().authenticated()
                 ).exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
@@ -59,6 +60,7 @@ public class WebSecurityConfig {
         configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Content-Type", "Authorization", "X-XSRF-token"));
         configuration.setAllowCredentials(false);
         configuration.setMaxAge(3600L);
+        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

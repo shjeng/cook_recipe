@@ -22,4 +22,6 @@ public class User extends BaseEntity {
     private String password;
     @Column(length = 100)
     private String nickname;
+    @Column(length = 100)
+    private String role;
 }

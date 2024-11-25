@@ -45,7 +45,7 @@ public class WebSecurityConfig {
                 ).authorizeHttpRequests(request -> request
                                 .requestMatchers("/", "/user/*", "/css/**","/js/**").permitAll()
                                 .requestMatchers("/api/user/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/board/**", "/api/user/**").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/board/**").permitAll()
                                 .anyRequest().authenticated()
                 ).exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
                         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

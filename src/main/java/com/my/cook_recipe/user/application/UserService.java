@@ -7,6 +7,7 @@ import com.my.cook_recipe.user.domain.User;
 import com.my.cook_recipe.user.infra.UserRepository;
 import com.my.cook_recipe.user.ui.request.LoginRequest;
 import com.my.cook_recipe.user.ui.request.SignUpRequest;
+import com.my.cook_recipe.user.ui.response.LoginResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,14 +39,21 @@ public class UserService {
                 .userId(requestDto.getId())
                 .password(requestDto.getPassword())
                 .nickname(requestDto.getNickname())
+                .role("USER")
                 .build();
         userRepository.save(user);
     }
 
-    public String login(@Valid LoginRequest loginRequest) {
+    public LoginResponse login(@Valid LoginRequest loginRequest, String referer) {
         Optional<User> userOptional = userRepository.findByUserIdAndPassword(loginRequest.getId(), loginRequest.getPassword());
         User user = optionalCheck(userOptional);
-        return jwtProvider.create(user.getUserId(), user.getRole());
+        String token = jwtProvider.create(user.getUserId(), user.getRole());
+        Integer expirationTime = 3600;
+        return LoginResponse.builder()
+                .token(token)
+                .expirationTime(expirationTime)
+                .referer(referer)
+                .build();
     }
 
     private User optionalCheck(Optional<User> userOptional) {

@@ -1,5 +1,6 @@
 package com.my.cook_recipe.user.application;
 
+import com.my.cook_recipe.common.constant.CommonType;
 import com.my.cook_recipe.common.error.exception.CustomException;
 import com.my.cook_recipe.common.provider.JwtProvider;
 import com.my.cook_recipe.common.util.StringUtil;
@@ -47,11 +48,13 @@ public class UserService {
     public LoginResponse login(@Valid LoginRequest loginRequest, String referer) {
         Optional<User> userOptional = userRepository.findByUserIdAndPassword(loginRequest.getId(), loginRequest.getPassword());
         User user = optionalCheck(userOptional);
-        String token = jwtProvider.create(user.getUserId(), user.getRole());
-        Integer expirationTime = 3600;
+        String accessToken = jwtProvider.create(CommonType.ACCESS, user.getUserId(), user.getRole(), 600000L);
+        String refreshToken = jwtProvider.create(CommonType.REFRESH, user.getUserId(), user.getRole(), 1000 * 60 * 60 * 24L);
+
         return LoginResponse.builder()
-                .token(token)
-                .expirationTime(expirationTime)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .expirationTime(1000 * 60 * 60)
                 .referer(referer)
                 .build();
     }

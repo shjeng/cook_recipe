@@ -1,5 +1,6 @@
 package com.my.cook_recipe.common.provider;
 
+import com.my.cook_recipe.common.constant.CommonType;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,25 +22,39 @@ public class JwtProvider {
         secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String create(String userId, String role) {
-        Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS)); // 엑세스 토큰 유효시간 1시간
-        Map<String, String> claimsMap = Map.of("userId", userId, "role", role);
+    public String create(CommonType category, String userId, String role, Long expiredMs) {
+        Map<String, String> claimsMap = Map.of("category", category.getCategory(), "userId", userId, "role", role);
+
+        // 1초에 1000밀리초
+        // 10분에 600,000밀리초
         return Jwts.builder()
                 .claims(claimsMap) // jwt 토큰 내 정보
-                .expiration(expiredDate) // 만료시간
+                .expiration(new Date(System.currentTimeMillis() + expiredMs)) // 만료시간
                 .signWith(secretKey) // 암호화
                 .issuedAt(Date.from(Instant.now())) // 발급 시간
                 .compact();
     }
 
     public String getUserId(String jwt) { // JWT 토큰의 유효성 검사
-        Claims claims = validateToken().parseSignedClaims(jwt).getPayload();
-        return claims.get("userId", String.class);
+        return getTokenInfo(jwt, "userId");
+    }
+
+    private Claims getPayload(String jwt) {
+        return validateToken().parseSignedClaims(jwt).getPayload();
     }
 
     public String getRole(String jwt) { // JWT 토큰의 유효성 검사
-        Claims claims = validateToken().parseSignedClaims(jwt).getPayload();
-        return claims.get("role", String.class);
+        return getTokenInfo(jwt, "role");
+    }
+
+
+    public String getCategory(String jwt) {
+        return getTokenInfo(jwt, "category");
+    }
+
+    private String getTokenInfo(String jwt, String value) {
+        Claims claims = getPayload(jwt);
+        return claims.get(value, String.class);
     }
 
     private JwtParser validateToken() {

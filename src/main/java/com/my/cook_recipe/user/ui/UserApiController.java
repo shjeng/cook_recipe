@@ -1,6 +1,8 @@
 package com.my.cook_recipe.user.ui;
 
+import com.my.cook_recipe.common.constant.CommonType;
 import com.my.cook_recipe.common.error.exception.CustomException;
+import com.my.cook_recipe.common.util.CookieUtil;
 import com.my.cook_recipe.common.util.StringUtil;
 import com.my.cook_recipe.user.application.UserService;
 import com.my.cook_recipe.user.ui.request.DupleCheck;
@@ -8,6 +10,7 @@ import com.my.cook_recipe.user.ui.request.LoginRequest;
 import com.my.cook_recipe.user.ui.request.SignUpRequest;
 import com.my.cook_recipe.user.ui.response.LoginResponse;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -64,9 +67,11 @@ public class UserApiController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
         String referer = request.getHeader("Referer");
         LoginResponse result = userService.login(loginRequest, referer);
-        return ResponseEntity.ok(result);
+        response.setHeader(CommonType.ACCESS.getCategory(), result.getAccessToken());
+        response.addCookie(CookieUtil.createCookie(CommonType.REFRESH.getCategory(), result.getRefreshToken(), result.getExpirationTime()));
+        return ResponseEntity.ok("ok");
     }
 }

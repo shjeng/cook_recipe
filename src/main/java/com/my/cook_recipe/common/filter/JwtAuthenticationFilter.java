@@ -1,11 +1,14 @@
 package com.my.cook_recipe.common.filter;
 
+import com.my.cook_recipe.common.error.code.CommonErrorCode;
+import com.my.cook_recipe.common.error.exception.CustomJwtExpiredException;
 import com.my.cook_recipe.common.provider.JwtProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,6 +36,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
                 return;
             }
+            String category = jwtProvider.getCategory(token);
+            if (!"access".equals(category)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
+                return;
+            }
+
             String email = jwtProvider.getUserId(token);
             if (email == null) {
                 filterChain.doFilter(request, response);
@@ -53,17 +62,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContext context = SecurityContextHolder.getContext();
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             context.setAuthentication(authenticationToken);
-
 //            SecurityContext securityContext = SecurityContextHolder.createEmptyContext(); // 새로운 빈 보안 컨텍스트 생성
 //            securityContext.setAuthentication(authenticationToken); // 앞서 생성한 인증 토큰을 보안 컨텍스트에 설정
+            filterChain.doFilter(request, response);
+        } catch (CustomJwtExpiredException e) {
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write(e.getCode().getDescription());
         } catch (Exception e) {
             e.printStackTrace();
         }
-        filterChain.doFilter(request, response);
     }
 
     private String parseBearerToken(HttpServletRequest request) {
-        String authorization = request.getHeader("Authorization");
+        String authorization = request.getHeader("access");
         boolean hasAuthorization = StringUtils.hasText(authorization);
         if (!hasAuthorization) return null;
 

@@ -20,13 +20,21 @@ public class JwtProvider {
 
     public SecretKey secretKey;
 
+    private final Long accessTokenExpiredMs = 600000L;
+    private final Long refreshTokenExpiredMs = 1000 * 60 * 60 * 24L;
+
     public JwtProvider(@Value("${jwt.secretKey}") String secret) {
         secretKey = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String create(CommonType category, String userId, String role, Long expiredMs) {
+    public String create(CommonType category, String userId, String role) {
         Map<String, String> claimsMap = Map.of("category", category.getCategory(), "userId", userId, "role", role);
-
+        Long expiredMs;
+        if (category.equals(CommonType.ACCESS)) {
+            expiredMs = accessTokenExpiredMs;
+        } else {
+            expiredMs = refreshTokenExpiredMs;
+        }
         // 1초에 1000밀리초
         // 10분에 600,000밀리초
         return Jwts.builder()

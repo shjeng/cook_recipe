@@ -48,8 +48,8 @@ public class UserService {
     public LoginResponse login(@Valid LoginRequest loginRequest, String referer) {
         Optional<User> userOptional = userRepository.findByUserIdAndPassword(loginRequest.getId(), loginRequest.getPassword());
         User user = optionalCheck(userOptional);
-        String accessToken = jwtProvider.create(CommonType.ACCESS, user.getUserId(), user.getRole(), 600000L);
-        String refreshToken = jwtProvider.create(CommonType.REFRESH, user.getUserId(), user.getRole(), 1000 * 60 * 60 * 24L);
+        String accessToken = jwtProvider.create(CommonType.ACCESS, user.getUserId(), user.getRole());
+        String refreshToken = jwtProvider.create(CommonType.REFRESH, user.getUserId(), user.getRole());
 
         return LoginResponse.builder()
                 .accessToken(accessToken)

@@ -2,8 +2,10 @@ package com.my.cook_recipe.auth.ui;
 
 import com.my.cook_recipe.auth.application.AuthService;
 import com.my.cook_recipe.common.constant.CommonType;
+import com.my.cook_recipe.common.error.exception.CustomJwtExpiredException;
 import com.my.cook_recipe.common.provider.JwtProvider;
 import com.my.cook_recipe.common.util.StringUtil;
+import com.my.cook_recipe.user.ui.response.TokenResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +25,7 @@ public class AuthApiController {
     private final JwtProvider jwtProvider;
 
     @GetMapping("/refresh")
-    public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<TokenResponse> refreshToken(HttpServletRequest request, HttpServletResponse response){
         String refreshToken = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
@@ -33,16 +35,23 @@ public class AuthApiController {
             }
         }
         if (StringUtil.isBlank(refreshToken)) {
-            return ResponseEntity.badRequest().body("Refresh Token is Null");
+            throw new CustomJwtExpiredException("Refresh Token is Null");
         }
         String category = jwtProvider.getCategory(refreshToken);
         if (!CommonType.REFRESH.getCategory().equals(category)) {
-            return ResponseEntity.badRequest().body("Invalid Refresh Token");
+            throw new CustomJwtExpiredException("Invalid Refresh Token");
         }
         String role = jwtProvider.getRole(refreshToken);
         String userId = jwtProvider.getUserId(refreshToken);
+
         String newAccessToken = jwtProvider.create(CommonType.ACCESS, userId, role);
-        response.setHeader(CommonType.ACCESS.getCategory(), newAccessToken);
-        return new ResponseEntity<>(HttpStatus.OK);
+        String newRefreshToken = jwtProvider.create(CommonType.REFRESH, userId, role);
+
+        TokenResponse result = TokenResponse.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken)
+                .build();
+
+        return ResponseEntity.ok(result);
     }
 }

@@ -3,12 +3,11 @@ package com.my.cook_recipe.user.application;
 import com.my.cook_recipe.common.constant.CommonType;
 import com.my.cook_recipe.common.error.exception.CustomException;
 import com.my.cook_recipe.common.provider.JwtProvider;
-import com.my.cook_recipe.common.util.StringUtil;
 import com.my.cook_recipe.user.domain.User;
 import com.my.cook_recipe.user.infra.UserRepository;
 import com.my.cook_recipe.user.ui.request.LoginRequest;
 import com.my.cook_recipe.user.ui.request.SignUpRequest;
-import com.my.cook_recipe.user.ui.response.LoginResponse;
+import com.my.cook_recipe.user.ui.response.TokenResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,16 +44,15 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public LoginResponse login(@Valid LoginRequest loginRequest, String referer) {
+    public TokenResponse login(@Valid LoginRequest loginRequest, String referer) {
         Optional<User> userOptional = userRepository.findByUserIdAndPassword(loginRequest.getId(), loginRequest.getPassword());
         User user = optionalCheck(userOptional);
         String accessToken = jwtProvider.create(CommonType.ACCESS, user.getUserId(), user.getRole());
         String refreshToken = jwtProvider.create(CommonType.REFRESH, user.getUserId(), user.getRole());
 
-        return LoginResponse.builder()
+        return TokenResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .expirationTime(1000 * 60 * 60)
                 .referer(referer)
                 .build();
     }

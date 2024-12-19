@@ -41,7 +41,8 @@ public class JwtProvider {
         // 10분에 600,000밀리초
         return Jwts.builder()
                 .claims(claimsMap) // jwt 토큰 내 정보
-                .expiration(new Date(System.currentTimeMillis() + expiredMs)) // 만료시간
+//                .expiration(new Date(System.currentTimeMillis() + expiredMs)) // 만료시간
+                .expiration(new Date(System.currentTimeMillis())) // 만료시간
                 .signWith(secretKey) // 암호화
                 .issuedAt(Date.from(Instant.now())) // 발급 시간
                 .compact();

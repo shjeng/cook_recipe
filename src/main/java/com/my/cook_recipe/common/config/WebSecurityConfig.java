@@ -1,5 +1,6 @@
 package com.my.cook_recipe.common.config;
 
+import com.my.cook_recipe.common.error.exception.CustomJwtExpiredException;
 import com.my.cook_recipe.common.filter.JwtAuthenticationFilter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -44,6 +45,7 @@ public class WebSecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 ).authorizeHttpRequests(request -> request
                                 .requestMatchers("/", "/user/*", "/css/**","/js/**").permitAll()
+//                                .requestMatchers(HttpMethod.GET,"/api/user/info").authenticated()
                                 .requestMatchers("/api/user/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/board/**").permitAll()
                                 .anyRequest().authenticated()
@@ -56,7 +58,7 @@ public class WebSecurityConfig {
     protected CorsConfigurationSource corsConfigrationSourse() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE","PATCH"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("X-Requested-With", "Content-Type", "Authorization", "X-XSRF-token"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
@@ -69,6 +71,9 @@ public class WebSecurityConfig {
 class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        if (authException instanceof CustomJwtExpiredException) {
+//            response.setStatus();
+        }
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write("{\"code:\": \"AF\", \"message\": \"Authorization Failed.\"}");

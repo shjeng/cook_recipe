@@ -8,6 +8,7 @@ import com.my.cook_recipe.user.infra.UserRepository;
 import com.my.cook_recipe.user.ui.request.LoginRequest;
 import com.my.cook_recipe.user.ui.request.SignUpRequest;
 import com.my.cook_recipe.user.ui.response.TokenResponse;
+import com.my.cook_recipe.user.ui.response.UserResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -55,6 +56,12 @@ public class UserService {
                 .refreshToken(refreshToken)
                 .referer(referer)
                 .build();
+    }
+
+    public UserResponse getUserById(String userId){
+        User user = userRepository.findByUserId(userId).orElseThrow(() -> new CustomException("존재하지 않는 유저입니다."));
+        return UserResponse.toEntity(user);
+
     }
 
     private User optionalCheck(Optional<User> userOptional) {

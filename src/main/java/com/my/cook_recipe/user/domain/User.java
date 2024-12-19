@@ -21,5 +21,5 @@ public class User extends BaseEntity {
     @Column(length = 100)
     private String nickname;
     @Column(length = 100)
-    private String role;
+    private String role; // user, admin
 }

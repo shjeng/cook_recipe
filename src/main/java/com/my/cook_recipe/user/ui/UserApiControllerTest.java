@@ -8,26 +8,31 @@ import com.my.cook_recipe.user.ui.request.LoginRequest;
 import com.my.cook_recipe.user.ui.request.SignUpRequest;
 import com.my.cook_recipe.user.ui.response.TokenResponse;
 import com.my.cook_recipe.user.ui.response.UserResponse;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/user")
-public class UserApiController {
+@RequestMapping("/api/te")
+public class UserApiControllerTest {
 
     private final UserService userService;
-    @GetMapping("/info")
+
+    @GetMapping("/te")
     public ResponseEntity<UserResponse> getUserInfoByToken(HttpServletRequest request) {
-        String access = request.getHeader("Authorization");
+        String access = request.getHeader("access");
         UserResponse result = userService.getUserById("test");
         return ResponseEntity.ok(result);
     }
+
+
     @PostMapping("/sign-up/id-check")
     public ResponseEntity<String> idDupleCheck(@RequestBody DupleCheck requestDto) {
         String id = requestDto.getStr();

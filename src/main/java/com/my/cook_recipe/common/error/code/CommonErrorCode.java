@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum CommonErrorCode {
-    EXPIRED_JWT_TOKEN("EJT", "{\"code:\": \"EJT\", \"message\": \"Expired Jwt Token.\"}");
+    EXPIRED_JWT_TOKEN("EJT", "{\"code\": \"EJT\", \"message\": \"Expired Jwt Token.\"}");
 
     private final String code;
     private final String description;

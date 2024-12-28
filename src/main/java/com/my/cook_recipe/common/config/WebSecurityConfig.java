@@ -1,6 +1,5 @@
 package com.my.cook_recipe.common.config;
 
-import com.my.cook_recipe.common.error.exception.CustomJwtExpiredException;
 import com.my.cook_recipe.common.filter.JwtAuthenticationFilter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,6 +46,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/", "/user/*", "/css/**","/js/**").permitAll()
 //                                .requestMatchers(HttpMethod.GET,"/api/user/info").authenticated()
                                 .requestMatchers("/api/user/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/auth/refresh").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/board/**").permitAll()
                                 .anyRequest().authenticated()
                 ).exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new FailedAuthenticationEntryPoint()))
@@ -71,9 +71,6 @@ public class WebSecurityConfig {
 class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        if (authException instanceof CustomJwtExpiredException) {
-//            response.setStatus();
-        }
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write("{\"code:\": \"AF\", \"message\": \"Authorization Failed.\"}");

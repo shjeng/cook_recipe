@@ -1,6 +1,7 @@
 package com.my.cook_recipe.auth.ui;
 
 import com.my.cook_recipe.auth.application.AuthService;
+import com.my.cook_recipe.auth.ui.request.RefreshRequest;
 import com.my.cook_recipe.common.constant.CommonType;
 import com.my.cook_recipe.common.error.exception.CustomJwtExpiredException;
 import com.my.cook_recipe.common.provider.JwtProvider;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,15 +26,9 @@ public class AuthApiController {
     private final JwtProvider jwtProvider;
 
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponse> refreshToken(HttpServletRequest request, HttpServletResponse response){
-        String refreshToken = null;
-        Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if (CommonType.REFRESH.getCategory().equals(cookie.getName())) {
-                refreshToken = cookie.getValue();
-                break;
-            }
-        }
+    public ResponseEntity<TokenResponse> refreshToken(HttpServletRequest request, HttpServletResponse response, @RequestBody RefreshRequest requestDto){
+        String refreshToken = requestDto.getRefreshToken();
+
         if (StringUtil.isBlank(refreshToken)) {
             throw new CustomJwtExpiredException("Refresh Token is Null");
         }

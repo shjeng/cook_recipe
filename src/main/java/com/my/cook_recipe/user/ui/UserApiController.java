@@ -1,6 +1,7 @@
 package com.my.cook_recipe.user.ui;
 
 import com.my.cook_recipe.common.error.exception.CustomException;
+import com.my.cook_recipe.common.provider.JwtProvider;
 import com.my.cook_recipe.common.util.StringUtil;
 import com.my.cook_recipe.user.application.UserService;
 import com.my.cook_recipe.user.ui.request.DupleCheck;
@@ -22,12 +23,16 @@ import org.springframework.web.bind.annotation.*;
 public class UserApiController {
 
     private final UserService userService;
+    private final JwtProvider jwtProvider;
+
     @GetMapping("/info")
     public ResponseEntity<UserResponse> getUserInfoByToken(HttpServletRequest request) {
-        String access = request.getHeader("Authorization");
-        UserResponse result = userService.getUserById("test");
+        String bearerToken = request.getHeader("Authorization");
+        String userId = jwtProvider.getUserId(bearerToken);
+        UserResponse result = userService.getUserById(userId);
         return ResponseEntity.ok(result);
     }
+
     @PostMapping("/sign-up/id-check")
     public ResponseEntity<String> idDupleCheck(@RequestBody DupleCheck requestDto) {
         String id = requestDto.getStr();
@@ -53,7 +58,7 @@ public class UserApiController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest requestDto){
+    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest requestDto) {
         if (!requestDto.getId().equals(requestDto.getIdCheck())) {
             throw new CustomException("중복체크된 id와 가입하려는 id가 일치하지 않음.", false);
         }

@@ -41,15 +41,15 @@ public class JwtProvider {
         // 10분에 600,000밀리초
         return Jwts.builder()
                 .claims(claimsMap) // jwt 토큰 내 정보
-//                .expiration(new Date(System.currentTimeMillis() + expiredMs)) // 만료시간
-                .expiration(new Date(System.currentTimeMillis())) // 만료시간
+                .expiration(new Date(System.currentTimeMillis() + expiredMs)) // 만료시간
                 .signWith(secretKey) // 암호화
                 .issuedAt(Date.from(Instant.now())) // 발급 시간
                 .compact();
     }
 
     public String getUserId(String jwt) { // JWT 토큰의 유효성 검사
-        return getTokenInfo(jwt, "userId");
+        String token = jwt.replace("Bearer ", "");
+        return getTokenInfo(token, "userId");
     }
 
     private Claims getPayload(String jwt) {
@@ -78,7 +78,7 @@ public class JwtProvider {
             throw new IllegalArgumentException("Invalid JWT signature", e);
         } catch (ExpiredJwtException e) {
             // JWT가 만료된 경우 처리
-            throw new CustomJwtExpiredException("Expired JWT token", CommonErrorCode.EXPIRED_JWT_TOKEN);
+             throw new CustomJwtExpiredException("Expired JWT token", CommonErrorCode.EXPIRED_JWT_TOKEN);
         } catch (Exception e) {
             // 기타 예외 처리
             throw new IllegalArgumentException("Invalid JWT token", e);

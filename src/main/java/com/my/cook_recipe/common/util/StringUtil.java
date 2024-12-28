@@ -6,7 +6,7 @@ import org.springframework.util.StringUtils;
 public class StringUtil {
 
     public static boolean isBlank(String str) {
-        return str != null && !str.trim().isEmpty();
+        return str == null || str.trim().isEmpty();
     }
 
     public static boolean notEquals(String str1, String str2) {

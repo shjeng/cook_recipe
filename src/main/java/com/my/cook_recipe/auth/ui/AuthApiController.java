@@ -5,6 +5,7 @@ import com.my.cook_recipe.auth.ui.request.RefreshRequest;
 import com.my.cook_recipe.common.constant.CommonType;
 import com.my.cook_recipe.common.error.exception.CustomJwtExpiredException;
 import com.my.cook_recipe.common.provider.JwtProvider;
+import com.my.cook_recipe.common.util.HttpUtil;
 import com.my.cook_recipe.common.util.StringUtil;
 import com.my.cook_recipe.user.ui.response.TokenResponse;
 import jakarta.servlet.http.Cookie;
@@ -12,10 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -24,6 +22,13 @@ public class AuthApiController {
 
     private final AuthService authService;
     private final JwtProvider jwtProvider;
+
+    @GetMapping("/role")
+    public ResponseEntity<?> getRoleByToken(HttpServletRequest request) {
+        String accessToken = HttpUtil.getAccessToken(request);
+        String userId = jwtProvider.getUserId(accessToken);
+        return ResponseEntity.ok().build();
+    }
 
     @PostMapping("/refresh")
     public ResponseEntity<TokenResponse> refreshToken(HttpServletRequest request, HttpServletResponse response, @RequestBody RefreshRequest requestDto){
